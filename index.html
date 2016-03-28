@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{margin:0;padding:0;}
+        ul{list-style: none;}
+        .out{
+            width: 1226px;
+            height: 460px;
+            margin:50px auto;
+            position: relative;
+        }
+        .out .img li{
+            position: absolute;
+            top:0;
+            left:0;
+        }
+        .out .num{
+            position: absolute;
+            bottom:20px;
+            left:0;
+            font-size: 0px;/*解决li之间的空隙*/
+            text-align: center;
+            width: 100%;/*有宽后居中才起作用*/
+        }
+        .out .num li{
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            background-color: #666;
+            text-align: center;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            margin:0 3px;
+            color:#fff;
+        }
+        .out .num li.active{
+            background-color: red;
+        }
+        .out .btn{
+            width: 30px;
+            height: 60px;
+            position: absolute;
+            top:50%;
+            margin-top:-30px;
+            background: rgba(0,0,0,.5);
+            color:#fff;
+            text-align: center;
+            line-height: 60px;
+            font-size: 40px;
+            display: none;
+            cursor: pointer;
+        }
+        .out:hover .btn{
+            display: block;
+        }
+        .out .left{
+            left:0;
+        }
+        .out .right{
+            right:0;
+        }
+    </style>
+</head>
+<body>
+<div class='out'>
+    <ul class="img">
+        <li><a href="#"><img src="img/1.jpg" alt=""/></a></li>
+        <li><a href="#"><img src="img/2.jpg" alt=""/></a></li>
+        <li><a href="#"><img src="img/3.jpg" alt=""/></a></li>
+        <li><a href="#"><img src="img/4.jpg" alt=""/></a></li>
+        <li><a href="#"><img src="img/5.jpg" alt=""/></a></li>
+    </ul>
+    <ul class="num">
+
+    </ul>
+    <div class="btn left">&lt;</div>
+    <div class="btn right">&gt;</div>
+</div>
+
+</body>
+</html>
+<script src='jquery-1.11.3.js'></script>
+<script>
+    $(function(){
+        //动态生成小圆点
+        var size=$('.img li').size();//获得图片的个数
+        for(var i=1;i<size+1;i++){
+            var li='<li>'+i+'</li>';
+            $('.num').append(li);
+        }
+
+        $('.img li').eq(0).show();//刚加载完先显示出第一张图片
+        $('.out .num li').eq(0).addClass('active');
+        $('.num li').mouseover(function(){
+            //小圆点样式
+            $(this).addClass('active').siblings().removeClass('active');
+            //小圆点控制图片变换
+            var index=$(this).index();
+            i=index;//让i与index统一
+            $('.img li').eq(index).stop().fadeIn(300).siblings().stop().fadeOut(300);
+        });
+        //自动轮播
+        var i=0;
+        var timer=setInterval(move,3000);
+        //向右移动的核心函数
+        function move(){
+            i++;
+            if(i==size){
+                i=0;
+            }
+            $('.num li').eq(i).addClass('active').siblings().removeClass('active');
+            $('.img li').eq(i).fadeIn(300).siblings().fadeOut(300);
+        }
+        //向左移动的核心函数
+        function moveL(){
+            i--;
+            if(i==-1){
+                i=size-1;
+            }
+            $('.num li').eq(i).addClass('active').siblings().removeClass('active');
+            $('.img li').eq(i).fadeIn(300).siblings().fadeOut(300);
+        }
+        //鼠标经过时停止定时器
+        $('.out').hover(function(){
+            clearInterval(timer);
+        },function(){
+            timer=setInterval(move,3000);
+        });
+        //左右按钮
+        $('.out .left').click(function(){
+            moveL();
+        })
+        $('.out .right').click(function(){
+            move();
+        })
+    })
+</script>
